@@ -1,0 +1,11 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/poc-customer-db
+  kafka:
+    bootstrap-servers: localhost:9092
+
+server:
+  servlet:
+    context-path: /poc-customer
+  port: 8088
