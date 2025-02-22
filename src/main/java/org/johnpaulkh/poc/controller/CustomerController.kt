@@ -29,7 +29,7 @@ class CustomerController(
 
     @GetMapping
     fun list(
-        @RequestParam page: Int,
-        @RequestParam size: Int,
+        @RequestParam(defaultValue = "1") page: Int,
+        @RequestParam(defaultValue = "20") size: Int,
     ) = customerService.list(page, size)
 }

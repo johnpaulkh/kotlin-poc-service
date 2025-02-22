@@ -44,6 +44,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mongodb")
+    testImplementation("org.testcontainers:kafka")
     testImplementation("org.jeasy:easy-random-core:$easyRandVersion") {
         exclude("commons-io", "commons-io")
         exclude("org.apache.commons", "commons-compress")
