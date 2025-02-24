@@ -1,7 +1,7 @@
 package org.johnpaulkh.poc.outbound
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.johnpaulkh.poc.exception.ServiceException
+import org.johnpaulkh.poc.model.Customer
 import org.johnpaulkh.poc.outbound.dto.Event
 import org.johnpaulkh.poc.outbound.dto.EventType
 import org.springframework.kafka.core.KafkaTemplate
@@ -13,21 +13,15 @@ class KafkaProducer(
     val objectMapper: ObjectMapper
 ) {
 
-    companion object {
-        const val TOPIC = "poc.customer"
-    }
-
-    fun<T> create(id: String, body: T) {
+    final inline fun<reified T> create(id: String, body: T) {
         send(id, body, EventType.CREATE)
     }
 
-    fun<T> update(id: String, body: T) {
-        if (id == "67b433808796771219af5cef") throw ServiceException("test")
-
+    final inline fun<reified T> update(id: String, body: T) {
         send(id, body, EventType.UPDATE)
     }
 
-    private fun<T> send(
+    final inline fun<reified T> send(
         id: String,
         body: T,
         eventType: EventType
@@ -38,6 +32,9 @@ class KafkaProducer(
             body = body,
         )
         val eventJson = objectMapper.writeValueAsString(event)
-        kafkaTemplate.send(TOPIC, event.id, eventJson)
+        val topic = TOPIC_MAP[body!!::class.qualifiedName]!!
+        kafkaTemplate.send(topic, event.id, eventJson)
     }
 }
+
+val TOPIC_MAP = mapOf(Customer::class.qualifiedName to "poc.customer")

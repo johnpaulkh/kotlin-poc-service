@@ -9,3 +9,5 @@ server:
   servlet:
     context-path: /poc-customer
   port: 8088
+
+logging.level.org.johnpaulkh.poc: DEBUG
