@@ -13,15 +13,15 @@ class KafkaProducer(
     val objectMapper: ObjectMapper
 ) {
 
-    final inline fun<reified T> create(id: String, body: T) {
+    final inline fun<reified T : Any> create(id: String, body: T) {
         send(id, body, EventType.CREATE)
     }
 
-    final inline fun<reified T> update(id: String, body: T) {
+    final inline fun<reified T : Any> update(id: String, body: T) {
         send(id, body, EventType.UPDATE)
     }
 
-    final inline fun<reified T> send(
+    final inline fun<reified T : Any> send(
         id: String,
         body: T,
         eventType: EventType
@@ -32,7 +32,7 @@ class KafkaProducer(
             body = body,
         )
         val eventJson = objectMapper.writeValueAsString(event)
-        val topic = TOPIC_MAP[body!!::class.qualifiedName]!!
+        val topic = TOPIC_MAP[body::class.qualifiedName]!!
         kafkaTemplate.send(topic, event.id, eventJson)
     }
 }
