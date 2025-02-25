@@ -1,6 +1,7 @@
 package org.johnpaulkh.poc.outbound
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.johnpaulkh.poc.exception.ServiceException
 import org.johnpaulkh.poc.model.Customer
 import org.johnpaulkh.poc.outbound.dto.Event
 import org.johnpaulkh.poc.outbound.dto.EventType
@@ -26,13 +27,19 @@ class KafkaProducer(
         body: T,
         eventType: EventType
     ) {
+        val className = body::class.qualifiedName
+        val topic = TOPIC_MAP[className]
+            ?: throw ServiceException(
+                code = "KAFKA_TOPIC_MISSING",
+                message = "Kafka topic missing for entity : $className"
+            )
+
         val event = Event(
             id = id,
             eventType = eventType,
             body = body,
         )
         val eventJson = objectMapper.writeValueAsString(event)
-        val topic = TOPIC_MAP[body::class.qualifiedName]!!
         kafkaTemplate.send(topic, event.id, eventJson)
     }
 }
